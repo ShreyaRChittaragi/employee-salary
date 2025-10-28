@@ -1,68 +1,8 @@
-# employee_salary_predictor/app.py
 
-import streamlit as st
-import pandas as pd
-import joblib
-
-model = joblib.load("salary_predictor_model.pkl")
-encoders = joblib.load("label_encoders.pkl")
-
-st.title("🧑‍🏋 Employee Salary Predictor")
-
-# Inputs for all features
-age = st.number_input("Age", 17, 90, 30)
-workclass = st.selectbox("Workclass", encoders['workclass'].classes_)
-fnlwgt = st.number_input("fnlwgt", 10000, 1000000, 150000)
-education = st.selectbox("Education", encoders['education'].classes_)
-educational_num = st.slider("Education Number", 1, 16, 10)
-marital_status = st.selectbox("Marital Status", encoders['marital-status'].classes_)
-occupation = st.selectbox("Occupation", encoders['occupation'].classes_)
-relationship = st.selectbox("Relationship", encoders['relationship'].classes_)
-race = st.selectbox("Race", encoders['race'].classes_)
-gender = st.selectbox("Gender", encoders['gender'].classes_)
-capital_gain = st.number_input("Capital Gain", 0, 100000, 0)
-capital_loss = st.number_input("Capital Loss", 0, 5000, 0)
-hours_per_week = st.slider("Hours per Week", 1, 100, 40)
-native_country = st.selectbox("Country", encoders['native-country'].classes_)
-
-# Prepare input for prediction
-input_df = pd.DataFrame({
-    "age": [age],
-    "workclass": [encoders['workclass'].transform([workclass])[0]],
-    "fnlwgt": [fnlwgt],
-    "education": [encoders['education'].transform([education])[0]],
-    "educational-num": [educational_num],
-    "marital-status": [encoders['marital-status'].transform([marital_status])[0]],
-    "occupation": [encoders['occupation'].transform([occupation])[0]],
-    "relationship": [encoders['relationship'].transform([relationship])[0]],
-    "race": [encoders['race'].transform([race])[0]],
-    "gender": [encoders['gender'].transform([gender])[0]],
-    "capital-gain": [capital_gain],
-    "capital-loss": [capital_loss],
-    "hours-per-week": [hours_per_week],
-    "native-country": [encoders['native-country'].transform([native_country])[0]]
-})
-
-# Predict
-if st.button("Predict Salary Category"):
-    result = model.predict(input_df)[0]
-    prediction = encoders['income'].inverse_transform([result])[0]
-    st.success(f"💰 Predicted Salary Category: {prediction}")
-
-
-# employee_salary_predictor/README.md
-
-"""
 # 🧑‍🏋 Employee Salary Predictor
 
 > A smart, interactive web app that predicts whether a person's income is **above or below $50K**, based on demographic and employment details.  
 > Built using **Streamlit** + **Machine Learning**, with a sleek UI and real-time predictions.
-
----
-
-## 🚀 Live Demo
-
-🔗 [Click here to try the app](https://7b3b0b5a3688.ngrok-free.app/)  
 
 ---
 
